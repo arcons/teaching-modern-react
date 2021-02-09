@@ -1,22 +1,24 @@
-import React, {useContext} from "react";
+import React, {useContext, useState, useEffect} from "react";
+import {AppContext} from "../../store";
+import {getHello} from "../../services/simpleGet"
 
 export default ({...props}) => {
-  useEffect(() => {
-    const updateUserInfo = async () => {
-        if (globalState.user) {
-            const ref = await db.collection("users").doc(globalState.user).get();
-            if (ref.exists) {
-                globalDispatch({type: 'USER_INFO_UPDATED', userInfo: ref.data()});
-            }
-        }
-    };
+  const [globalState, globalDispatch] = useContext(AppContext);
+  const [hello, setHelloState] = useState("Not Hello")
+  useEffect(async () => {
+    const helloResponse = await getHello()
+    helloResponse ? setHelloState(helloResponse) : console.log("bad")
+  }, [globalState.currentGlobalState]);
 
-    if (!globalState.userInfo) {
-        updateUserInfo();
-    }
-}, [globalState.userInfo]);
 return (
   <div>
-    Basic page
+      <header className="App-header">
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <div>
+        {hello}
+        </div>
+      </header>
   </div>
-}
+)}
